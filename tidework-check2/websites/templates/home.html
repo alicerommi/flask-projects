@@ -1,0 +1,326 @@
+﻿{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
+<meta http-equiv="refresh" content="300" />
+<h3 class="text-center text-info">CONTAINER STATUS</h3>
+<div class="col-md-12">
+   <div class="panel panel-primary">
+      <div class="panel-heading">Add New Container?</div>
+      <div class="panel-body">
+         <div class="alert alert-danger alter-dismissable show text-center" role="alert" id="danger" style="display:none !important;">
+         </div>
+         <div class="alert alert-success alter-dismissable show text-center" id="success" role="alert" style="display:none !important;">
+         </div>
+         <form class="form-inline" id="my_form_container" style="    text-align: center;">
+            <div class=" form-group">
+                <textarea rows="4" cols="50" type="'text" id="container" name="container" class="form-control" required placeholder="Please Add Container #, Make sure to HIT ENTER when Adding new CONTAINER *(Don't add (,) between Containers)"></textarea>
+            </div>
+            <div class=" form-group">
+               <button type="button"  id="addRow" class="btn btn-primary">Add New Container</button>
+            </div>
+            <!--                    <div id="server-results">&lt;!&ndash; For server results &ndash;&gt;</div>-->
+         </form>
+      </div>
+   </div>
+   <div align="center">
+      <span class="badge badge-secondary">Last Update Date and Time is : {{ update_time }}</span>
+
+      <div  style="white-space: pre" align="center">
+         <button type="button" class="btn btn-success" onClick="window.location.reload();">Refresh Page</button>
+      </div>
+
+   </div>
+
+</div>
+<div class="col-md-12">
+   <div class="panel panel-success">
+      <div class="panel-heading primary">All Containers That Are Released</div>
+      <div class="panel-body col-md-12">
+         <table style="font-size: 10px;" class="table w-auto table-striped table-responsive" id="table_1">
+            <thead class="thread-dark">
+               <tr>
+                  <th>Ref #</th>
+                  <th>Search Status</th>
+                  <th>Available</th>
+                  <th>Size</th>
+                  <th>Cus Rel Status</th>
+                  <th>Lin Rel Status</th>
+                  <th>Hold Status</th>
+                  <th>Add Hold Info</th>
+                  <th>Location</th>
+                  <th>Status Exists</th>
+                  <th>Hold</th>
+                  <th>Email</th>
+                  <th>Current Date</th>
+                  <th>Last Visit</th>
+                  <th></th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for value in list_of_dics %}
+               <tr>
+                  <td>{{ value["reference_no"] }}</td>
+                  <td>{{ value["search_status"] }}</td>
+                  <td>{{ value["available"] }}</td>
+                  <td>{{ value["size"] }}</td>
+                  <td>{{ value["customs_release_status"] }}</td>
+                  <td>{{ value["line_release_status"] }}</td>
+                  <td>{{ value["holds_status"] }}</td>
+                  <td>{{ value["addt_hold_info"] }}</td>
+                  <td>{{ value["location"] }}</td>
+                  <td>{{ value["status_exists"] }}</td>
+                  <td>{{ value["hold"] }}</td>
+                  <td>{{ value["email"] }}</td>
+                  <td>{{ value["current_date"] }}</td>
+                  <td>{{ value["last_visit_bot"] }}</td>
+                  <td><button type="button" value={{value.reference_no}}  name="delete" id="delete" class="btn btn-danger"> <i class ="fa fa-cut"></i><i>   </i>  </button></td>
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<!-- <br>
+   <br> -->
+<!-- <br> -->
+<div class="col-md-12" id="update2">
+   <div class="panel panel-warning">
+      <div class="panel-heading primary">All Containers That Are Not Released</div>
+      <div class="panel-body col-md-12">
+         <table style="font-size: 10px;" class="table w-auto table-striped table-responsive" id="table_2">
+            <thead class="thread-dark">
+               <tr>
+                  <th>Ref #</th>
+                  <th>Search Status</th>
+                  <th>Available</th>
+                  <th>Size</th>
+                  <th>Cus Rel Status</th>
+                  <th>Lin Rel Status</th>
+                  <th>Hold Status</th>
+                  <th>Add Hold Info</th>
+                  <th>Location</th>
+                  <th>Status Exists</th>
+                  <th>Hold</th>
+                  <th>Email</th>
+                  <th>Current Date</th>
+                  <th>Last Visit</th>
+                  <th></th>
+                  <th></th>
+               </tr>
+            </thead>
+            <!--Table head-->
+            <!--Table body-->
+            <tbody>
+               {% for value in list_of_dics2 %}
+               <tr>
+                  <td>{{ value["reference_no"] }}</td>
+                  <td>{{ value["search_status"] }}</td>
+                  <td>{{ value["available"] }}</td>
+                  <td>{{ value["size"] }}</td>
+                  <td>{{ value["customs_release_status"] }}</td>
+                  <td>{{ value["line_release_status"] }}</td>
+                  <td>{{ value["holds_status"] }}</td>
+                  <td>{{ value["addt_hold_info"] }}</td>
+                  <td>{{ value["location"] }}</td>
+                  <td>{{ value["status_exists"] }}</td>
+                  <td>{{ value["hold"] }}</td>
+                  <td>{{ value["email"] }}</td>
+                  <td>{{ value["current_date"] }}</td>
+                  <td>{{ value["last_visit_bot"] }}</td>
+                  <td><button type="button"  value={{value.reference_no}} data-toggle="modal" data-target="#myModal" id="update1" class="btn btn-success"> <i class ="fa fa-edit"></i><i>   </i>  </button></td>
+                  <td><button type="button" value={{value.reference_no}}  name="delete" id="delete" class="btn btn-danger"> <i class ="fa fa-cut"></i><i>   </i>  </button></td>
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<div id="myModal" class="modal fade">
+   <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h4 class="modal-title">Please update the Reference Number</h4>
+         </div>
+         <div class="modal-body">
+            <label>Old Reference #</label>
+            <input type="text" disabled name="reference" id="reference" class="form-control">
+            <br>
+            <label>New Reference #</label>
+            <input type="text" name="reference" id="reference_new" class="form-control">
+            <br>
+            <button type="button" name="update_ref" id="update_ref" class="btn btn-success fa fa-plus"> Update Reference</button>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+{% block custom_js_code %}
+<script type="text/javascript">
+   $(document).ready( function () {
+
+     $('#table_1').DataTable();
+     $('#table_2').DataTable();
+     $("#container").keyup(function(){
+       $(".alert").remove();
+     });
+
+
+
+
+   $(document).on('click','#addRow',function(){
+       if ($("#container").val().length==0 || $("#container").val()=="" ){
+            Swal.fire({
+                     icon: 'error',
+                     title: 'Value Error',
+                     text: 'Please enter container number',
+                       timer: 5000,
+                     showCancelButton: false,
+                     showConfirmButton: false
+
+            });
+           return;
+       }
+       $.ajax({
+           'url' : '/save_container_form',
+           'method': 'POST',
+           'data' : {
+               'container':$("#container").val()
+           },
+           dataType:"JSON",
+           success:function(data){
+               if (data['success']==1){
+                   $("#container").val("");
+                   Swal.fire({
+                     icon: 'success',
+                     title: 'Good Job',
+                     text: data['msg'],
+                       timer: 5000,
+                     showCancelButton: false,
+                     showConfirmButton: false
+
+                   });
+               }else{
+                    Swal.fire({
+                     icon: 'error',
+                     title: 'Oops...',
+                     text: data['msg'],
+                       timer: 5000,
+                     showCancelButton: false,
+                     showConfirmButton: false
+
+                   });
+               }
+           }
+       });  //end ajax call here
+       setTimeout(function(){location.reload()},5000);
+   });
+   });
+
+
+   $(document).on('click','#delete',function(){
+        
+       var val  = $(this).val();
+       Swal.fire({
+                             icon: 'warning',
+                             title: 'Delete Reference #',
+                             text: 'Are you sure you want to delete reference # ?',
+                               timer: 5000,
+                              type: 'warning',
+                              showCancelButton: true,
+                             confirmButtonText: "Yes"
+       }).then(function(result){ if (result.isConfirmed) {
+                   $.ajax({
+                       url:'/delete_ref/'+val,
+                       method:"POST",
+                       success:function(data){
+                       if (data['success']==1){
+                           Swal.fire({
+                             icon: 'warning',
+                             title: 'Delete',
+                             text: data['msg'],
+                               timer: 5000,
+                             showCancelButton: false,
+                             showConfirmButton: false
+                           });
+                       }else{
+                            Swal.fire({
+                             icon: 'error',
+                             title: 'Oops...',
+                             text: data['msg'],
+                               timer: 5000,
+                             showCancelButton: false,
+                             showConfirmButton: false
+                           });
+                       }
+   		            }
+   		        });
+        }
+       });
+   });
+
+
+
+   $(document).on('click','#update',function(){
+       var val  = $(this).val();
+       $('#reference').val(val)
+   });
+   $(document).on('click','#update1',function(){
+       var val  = $(this).val();
+       $('#reference').val(val)
+   });
+
+
+   $(document).ready(function(){
+     $('#update_ref').click(function(){
+          var reference= $('#reference').val();
+          var reference_new= $('#reference_new').val();
+
+          if (reference_new == '' && reference_new.length==0){
+            Swal.fire({
+                     icon: 'error',
+                     title: 'Value Error',
+                     text: 'Please enter the correct reference number',
+                     timer: 5000,
+                     showCancelButton: false,
+                     showConfirmButton: false
+
+            });
+           return;
+       }
+          if(reference_new != '')
+          {
+               $.ajax({
+                    url:'/update_ref',
+                    method:"POST",
+                    data: {reference:reference,reference_new:reference_new},
+                    success:function(data){
+                       if (data['success']==1){
+                           Swal.fire({
+                             icon: 'success',
+                             title: 'Good Job',
+                             text: data['msg'],
+                               timer: 5000,
+                             showCancelButton: false,
+                             showConfirmButton: false
+                           });
+                       }else{
+                            Swal.fire({
+                             icon: 'error',
+                             title: 'Oops...',
+                             text: data['msg'],
+                               timer: 5000,
+                             showCancelButton: false,
+                             showConfirmButton: false
+
+                           });
+                       }
+                   }
+               });
+          }
+     });
+   });
+
+</script>
+{% endblock %}
