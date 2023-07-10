@@ -1,0 +1,265 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
+<meta http-equiv="refresh" content="300" />
+<h3 class="text-center text-info">Welcome to User Management</h3>
+<div class="col-md-12">
+  <div class="panel panel-info">
+   <div class="panel-heading">Want to Add new User?</div>
+       <div class="panel-body">
+
+        <div class="alert alert-danger alter-dismissable show text-center" role="alert" id="danger" style="display:none !important;">
+
+        </div>
+
+        <div class="alert alert-success alter-dismissable show text-center" id="success" role="alert" style="display:none !important;">
+
+        </div>
+
+                <form class="form-inline" id="my_form_container" style="text-align: center;">
+                    <div class=" form-group">
+                      <input type="email" id="user_email" name="user_email" class="form-control" required placeholder="Please enter User Email">
+                    </div>
+                    <div class=" form-group">
+                      <input type="text" id="name" name="name" class="form-control" required placeholder="Please enter User Name">
+                    </div>
+                    <div class=" form-group">
+                      <input type="password" id="password" name="password" class="form-control" required placeholder="Password ( Length > 4 )">
+
+                    </div>
+                  <div class=" form-group">
+                    <button type="button"  id="addRow" class="btn btn-primary"> <i class ="fa fa-plus-square"></i><i>   </i> Add New User</button>
+                  </div>
+<!--                    <div id="server-results">&lt;!&ndash; For server results &ndash;&gt;</div>-->
+                </form>
+          </div>
+    </div>
+</div>
+
+
+<div class="col-md-12">
+    <div class="panel panel-success">
+   <div class="panel-heading">Table shows all the Users created by Admin</div>
+       <div class="panel-body col-md-12" align="center">
+            <table class="table table-bordered table-responsive" id="table_1">
+                  <thead >
+                    <tr>
+                      <th>Email</th>
+                      <th>Name</th>
+                      <th>Creation Date</th>
+                      <th>Update User</th>
+                      <th>Delete User</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for value in list_users %}
+                          <tr>
+                              <td id="useremail"  value={{value.user_email}} >{{ value["user_email"] }}</td>
+                              <td id="username">{{ value["name"] }}</td>
+                              <td id="date">{{ value["creation_date"] }}</td>
+                              <td><button type="button" value={{value.user_email}} data-toggle="modal" data-target="#myModal" id="update" class="btn btn-success"> <i class ="fa fa-edit"></i><i>   </i> Update </button></td>
+                              <td><button type="button" value={{value.user_email}}  name="delete" id="delete" class="btn btn-danger"> <i class ="fa fa-cut"></i><i>   </i> Delete </button></td>
+
+                          </tr>
+                  {% endfor %}
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+    </div>
+
+<br>
+
+ <div id="myModal" class="modal fade">
+      <div class="modal-dialog">
+   <!-- Modal content-->
+           <div class="modal-content">
+                <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal">×</button>
+                     <h4 class="modal-title">Please provide the update user information.</h4>
+                </div>
+                <div class="modal-body">
+                     <label>Email</label>
+                     <input type="text" name="email1" id="email1" disabled class="form-control">
+                     <br>
+                     <label>Username</label>
+                     <input type="text" name="username1" id="username1" class="form-control">
+                     <br>
+                     <label>Password</label>
+                     <input type="password" name="password1" id="password1" class="form-control">
+                    <br>
+                     <button type="button" name="login_button" id="login_button" class="btn btn-success fa fa-user"> Update Information</button>
+                </div>
+           </div>
+      </div>
+ </div>
+
+
+{% endblock %}
+{% block custom_js_code %}
+<script type="text/javascript">
+
+
+$(document).ready( function () {
+      $('#table_1').DataTable();
+      $("#user_email").keyup(function(){
+        $(".alert").remove();
+      });
+
+$(document).on('click','#update',function(){
+    var val  = $(this).val();
+    $('#email1').val(val)
+});
+
+$(document).on('click','#delete',function(){
+    var val  = $(this).val();
+    Swal.fire({
+                          icon: 'warning',
+                          title: 'Delete User',
+                          text: 'Are you sure you want to delete user?',
+                            timer: 5000,
+                           type: 'warning',
+                           showCancelButton: true,
+                          confirmButtonText: "Yes"
+    }).then(function(result){ if (result.isConfirmed) {
+                $.ajax({
+                    url:'/delete/'+val,
+                    method:"POST",
+                    success:function(data){
+                    if (data['success']==1){
+                        Swal.fire({
+                          icon: 'warning',
+                          title: 'Delete',
+                          text: data['msg'],
+                            timer: 5000,
+                          showCancelButton: false,
+                          showConfirmButton: false
+                        });
+                    }else{
+                         Swal.fire({
+                          icon: 'error',
+                          title: 'Oops...',
+                          text: data['msg'],
+                            timer: 5000,
+                          showCancelButton: false,
+                          showConfirmButton: false
+                        });
+                    }
+		            }
+		        });
+     }
+    });
+});
+$(document).ready(function(){
+  $('#login_button').click(function(){
+       var email1= $('#email1').val();
+       var username1= $('#username1').val();
+       var password1 = $('#password1').val();
+       if (username1 == '' || password1 == '' && username1.length==0 || password1.length==0){
+         Swal.fire({
+                  icon: 'error',
+                  title: 'Value Error',
+                  text: 'Please enter complete user information',
+                    timer: 5000,
+                  showCancelButton: false,
+                  showConfirmButton: false
+
+         });
+        return;
+    }
+       if(username1 != '' && password1 != '')
+       {
+            $.ajax({
+                 url:'/action',
+                 method:"POST",
+                 data: {email1:email1,username1:username1, password1:password1},
+                 success:function(data){
+                    if (data['success']==1){
+                        Swal.fire({
+                          icon: 'success',
+                          title: 'Good Job',
+                          text: data['msg'],
+                            timer: 5000,
+                          showCancelButton: false,
+                          showConfirmButton: false
+                        });
+                    }else{
+                         Swal.fire({
+                          icon: 'error',
+                          title: 'Oops...',
+                          text: data['msg'],
+                            timer: 5000,
+                          showCancelButton: false,
+                          showConfirmButton: false
+
+                        });
+                        $('#loginModal').hide();
+                        location.reload();
+                    }
+                }
+            });
+       }
+  });
+});
+
+
+
+
+
+
+$(document).on('click','#addRow',function(){
+    if ($("#user_email").val().length==0 || $("#user_email").val()=="" && $("#name").val().length==0 || $("#name").val()=="" && $("#password").val().length>4 || $("#password").val()==""){
+         Swal.fire({
+                  icon: 'error',
+                  title: 'Value Error',
+                  text: 'Please enter complete user information',
+                    timer: 5000,
+                  showCancelButton: false,
+                  showConfirmButton: false
+
+         });
+        return;
+    }
+    $.ajax({
+        'url' : '/save_users',
+        'method': 'POST',
+        'data' : {
+            'user_email':$("#user_email").val(),
+            'name':$("#name").val(),
+            'password':$("#password").val(),
+        },
+        dataType:"JSON",
+        success:function(data){
+            if (data['success']==1){
+                $("#user_email").val("");
+                $("#name").val("");
+                $("#password").val("");
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Good Job',
+                  text: data['msg'],
+                    timer: 5000,
+                  showCancelButton: false,
+                  showConfirmButton: false
+
+                });
+            }else{
+                 Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: data['msg'],
+                    timer: 50000,
+                  showCancelButton: false,
+                  showConfirmButton: false
+
+                });
+            }
+        }
+    });  //end ajax call here
+    setTimeout(function(){location.reload()},5000);
+});
+
+} );
+</script>
+{% endblock %}

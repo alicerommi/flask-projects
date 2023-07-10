@@ -1,0 +1,64 @@
+<!-- Developed BY: Abdul Rehman
+Author: Feef
+Email: rehmana578@gmail.com
+Website: http://fiverrwala.com
+WhatsApp: +92 308 5092071 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Tool</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>{% block title %}Home Page | Container Tracker Panel{% endblock %}</title>
+ </head>
+<body>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      {% if is_login %}
+        <li class="nav-item">
+            <a  href="/"><i class ="fa fa-sign-in"></i> Login</a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+            <a  href="/home"><i class ="fa fa-home"></i> Home</a>
+        </li>
+        {% if session['is_admin'] == 1 %}
+            <li class="nav-item">
+                <a  href="/users"><i class ="fa fa-user"></i>  User Management</a>
+            </li>
+        {% endif %}
+    </ul>
+      <ul class="nav navbar-right">
+        <li class="nav-item">
+            <a  href="/logout"><i class ="fa fa-sign-out"></i> Logout</a>
+        </li>
+      {% endif %}
+        </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    {% block content %}
+    {% endblock %}
+  </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+{% block custom_js_code %}
+{% endblock %}
+</body>
+</html>
+
